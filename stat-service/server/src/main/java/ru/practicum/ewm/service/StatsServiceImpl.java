@@ -71,6 +71,7 @@ public class StatsServiceImpl implements StatsService {
                 stats.add(stat);
             }
         }
+        stats.sort((a, b) -> b.getHits().compareTo(a.getHits()));
         log.info("Найдено {} объектов по запросу start={}, end={}, uris={}, unique={}", stats.size(), start, end, uris, unique);
         return stats;
     }
