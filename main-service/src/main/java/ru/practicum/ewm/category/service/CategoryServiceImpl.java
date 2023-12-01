@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> get(int from, int size) {
-        PageRequest pageRequest = PageRequest.of(from/size, size);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         List<Category> foundCategories = categoryRepository.findAllBy(pageRequest);
         log.info("{} categories were found", foundCategories.size());
         return CategoryMapper.toCategoryDto(foundCategories);

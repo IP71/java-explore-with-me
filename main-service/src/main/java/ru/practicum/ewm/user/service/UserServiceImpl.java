@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> get(List<Long> ids, int from, int size) {
-        PageRequest pageRequest = PageRequest.of(from/size, size);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         List<User> foundUsers;
         if (ids == null) {
             foundUsers = userRepository.findAllBy(pageRequest);
