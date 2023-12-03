@@ -22,6 +22,11 @@ import java.util.List;
 public class EventController {
     private final EventService eventService;
 
+    /**
+     * Method for getting info about events added by current user
+     * @param userId id of current user
+     * @return Method returns info about events
+     */
     @GetMapping("/users/{userId}/events")
     @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> getEventsAddedByUser(@PathVariable long userId,
@@ -30,6 +35,12 @@ public class EventController {
         return eventService.getEventsAddedByUser(userId, from, size);
     }
 
+    /**
+     * Method for creating an event
+     * @param userId id of user that creates an event
+     * @param newEventDto data for creation
+     * @return Method returns the created event
+     */
     @PostMapping("/users/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto create(@PathVariable long userId,
@@ -37,6 +48,12 @@ public class EventController {
         return eventService.create(userId, newEventDto);
     }
 
+    /**
+     * Method for getting an event by its creator
+     * @param userId id of creator
+     * @param eventId id of event
+     * @return Method returns info about event
+     */
     @GetMapping("/users/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventByAuthor(@PathVariable long userId,
@@ -44,6 +61,13 @@ public class EventController {
         return eventService.getEventByAuthor(userId, eventId);
     }
 
+    /**
+     * Method for updating an event by its creator
+     * @param userId id of creator
+     * @param eventId id of event
+     * @param request data for updating
+     * @return Method returns the updated event
+     */
     @PatchMapping("/users/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventByAuthor(@PathVariable long userId,
@@ -52,6 +76,12 @@ public class EventController {
         return eventService.updateEventByAuthor(userId, eventId, request);
     }
 
+    /**
+     * Method for getting requests for event
+     * @param userId id of current user
+     * @param eventId id of event
+     * @return Method returns info about requests
+     */
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public List<ParticipationRequestDto> getRequestsForEventOfCurrentUser(@PathVariable long userId,
@@ -59,6 +89,13 @@ public class EventController {
         return eventService.getRequestsForEventOfCurrentUser(userId, eventId);
     }
 
+    /**
+     * Method for setting a status for requests
+     * @param userId id of current user
+     * @param eventId id of event
+     * @param request data about requests
+     * @return Method returns info about requests
+     */
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult setStatusForRequestsByCurrentUser(@PathVariable long userId,
@@ -67,6 +104,10 @@ public class EventController {
         return eventService.setStatusForRequestsByCurrentUser(userId, eventId, request);
     }
 
+    /**
+     * Method for getting events by admin by multiple parameters
+     * @return Method returns info about events
+     */
     @GetMapping("/admin/events")
     @ResponseStatus(HttpStatus.OK)
     public List<EventFullDto> getEventsByAdmin(@RequestParam(name = "users", required = false) List<Long> users,
@@ -79,6 +120,12 @@ public class EventController {
         return eventService.getEventsByAdmin(new AdminSearchParameters(users, states, categories, rangeStart, rangeEnd, from, size));
     }
 
+    /**
+     * Method for updating an event by admin
+     * @param eventId id of event
+     * @param request data for updating
+     * @return Method returns the updated event
+     */
     @PatchMapping("/admin/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventByAdmin(@PathVariable long eventId,
@@ -86,6 +133,10 @@ public class EventController {
         return eventService.updateEventByAdmin(eventId, request);
     }
 
+    /**
+     * Method for getting events by user by multiple parameters
+     * @return Method returns info about events
+     */
     @GetMapping("/events")
     @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> get(@RequestParam(name = "text", required = false) String text,
@@ -102,6 +153,11 @@ public class EventController {
                 sort, from, size), request);
     }
 
+    /**
+     * Method for getting event by id
+     * @param id id of event
+     * @return Method returns info about an event
+     */
     @GetMapping("/events/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventById(@PathVariable long id,

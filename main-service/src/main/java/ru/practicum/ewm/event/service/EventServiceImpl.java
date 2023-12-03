@@ -43,6 +43,11 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     //private final StatsClient statsClient;
 
+    /**
+     * Method for getting info about events added by current user
+     * @param userId id of current user
+     * @return Method returns info about events
+     */
     @Override
     public List<EventShortDto> getEventsAddedByUser(long userId, int from, int size) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -52,6 +57,12 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventShortDto(foundEvents);
     }
 
+    /**
+     * Method for creating an event
+     * @param userId id of user that creates an event
+     * @param newEventDto data for creation
+     * @return Method returns the created event
+     */
     @Override
     @Transactional
     public EventFullDto create(long userId, NewEventDto newEventDto) {
@@ -64,6 +75,12 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    /**
+     * Method for getting an event by its creator
+     * @param userId id of creator
+     * @param eventId id of event
+     * @return Method returns info about event
+     */
     @Override
     public EventFullDto getEventByAuthor(long userId, long eventId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -72,6 +89,13 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    /**
+     * Method for updating an event by its creator
+     * @param userId id of creator
+     * @param eventId id of event
+     * @param request data for updating
+     * @return Method returns the updated event
+     */
     @Override
     @Transactional
     public EventFullDto updateEventByAuthor(long userId, long eventId, UpdateEventUserRequest request) {
@@ -133,6 +157,12 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    /**
+     * Method for getting requests for event
+     * @param userId id of current user
+     * @param eventId id of event
+     * @return Method returns info about requests
+     */
     @Override
     public List<ParticipationRequestDto> getRequestsForEventOfCurrentUser(long userId, long eventId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -145,6 +175,13 @@ public class EventServiceImpl implements EventService {
         return ParticipationRequestMapper.toParticipationRequestDto(foundRequests);
     }
 
+    /**
+     * Method for setting a status for requests
+     * @param userId id of current user
+     * @param eventId id of event
+     * @param request data about requests
+     * @return Method returns info about requests
+     */
     @Override
     @Transactional
     public EventRequestStatusUpdateResult setStatusForRequestsByCurrentUser(long userId, long eventId, EventRequestStatusUpdateRequest request) {
@@ -196,6 +233,10 @@ public class EventServiceImpl implements EventService {
                 ParticipationRequestMapper.toParticipationRequestDto(rejectedRequests));
     }
 
+    /**
+     * Method for getting events by admin by multiple parameters
+     * @return Method returns info about events
+     */
     @Override
     public List<EventFullDto> getEventsByAdmin(AdminSearchParameters parameters) {
         List<Long> users = parameters.getUsers();
@@ -217,6 +258,12 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(foundEvents);
     }
 
+    /**
+     * Method for updating an event by admin
+     * @param eventId id of event
+     * @param request data for updating
+     * @return Method returns the updated event
+     */
     @Override
     @Transactional
     public EventFullDto updateEventByAdmin(long eventId, UpdateEventAdminRequest request) {
@@ -277,6 +324,10 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    /**
+     * Method for getting events by user by multiple parameters
+     * @return Method returns info about events
+     */
     @Override
     public List<EventShortDto> get(UserSearchParameters parameters, HttpServletRequest request) {
         //statsClient.addEndpointHit(APP, request.getRequestURI(), request.getRemoteAddr(),
@@ -311,6 +362,11 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventShortDto(foundEvents);
     }
 
+    /**
+     * Method for getting event by id
+     * @param id id of event
+     * @return Method returns info about an event
+     */
     @Override
     public EventFullDto getEventById(long id, HttpServletRequest request) {
         //statsClient.addEndpointHit(APP, request.getRequestURI(), request.getRemoteAddr(),
@@ -323,16 +379,25 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    /**
+     * Method checks if event date is valid
+     */
     private void checkEventDate(LocalDateTime eventDate) {
         if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new BadEventDateException(eventDate.format(FORMATTER));
         }
     }
 
+    /**
+     * Method checks if event category is exist
+     */
     private Category checkEventCategory(long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
     }
 
+    /**
+     * Method checks if event location is saved, and if not, saves it
+     */
     private Location checkEventLocation(Location location) {
         Optional<Location> optionalLocation = locationRepository
                 .findFirst1ByLatIsAndLonIs(location.getLat(), location.getLon());

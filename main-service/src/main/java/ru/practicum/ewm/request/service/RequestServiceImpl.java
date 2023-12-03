@@ -29,6 +29,11 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
+    /**
+     * Method for getting requests by current user
+     * @param userId id of current user
+     * @return Method returns info about requests
+     */
     @Override
     public List<ParticipationRequestDto> getRequestsForCurrentUser(long userId) {
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -37,6 +42,12 @@ public class RequestServiceImpl implements RequestService {
         return ParticipationRequestMapper.toParticipationRequestDto(foundRequests);
     }
 
+    /**
+     * Method for creating a request
+     * @param userId id of current user
+     * @param eventId id of event
+     * @return Method returns the created request
+     */
     @Override
     public ParticipationRequestDto create(long userId, long eventId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -70,6 +81,12 @@ public class RequestServiceImpl implements RequestService {
         return ParticipationRequestMapper.toParticipationRequestDto(request);
     }
 
+    /**
+     * Method for canceling a request
+     * @param userId id of current user
+     * @param requestId id of request
+     * @return Method returns the canceled request
+     */
     @Override
     public ParticipationRequestDto cancelRequestForCurrentUser(long userId, long requestId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));

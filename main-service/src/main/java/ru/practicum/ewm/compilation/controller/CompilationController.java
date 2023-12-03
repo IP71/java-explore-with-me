@@ -20,6 +20,11 @@ import java.util.List;
 public class CompilationController {
     private final CompilationService compilationService;
 
+    /**
+     * Method for getting info about all compilations
+     * @param pinned pinned, unpinned of all(if null)
+     * @return Method returns info about compilations
+     */
     @GetMapping("/compilations")
     @ResponseStatus(HttpStatus.OK)
     public List<CompilationDto> get(@RequestParam(name = "pinned", required = false) Boolean pinned,
@@ -28,24 +33,44 @@ public class CompilationController {
         return compilationService.get(pinned, from, size);
     }
 
+    /**
+     * Method for getting info about a compilation
+     * @param compId id of compilation to get info about
+     * @return Method return info about a compilation
+     */
     @GetMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto getCompilationById(@PathVariable long compId) {
         return compilationService.getCompilationById(compId);
     }
 
+    /**
+     * Method for creating a compilation
+     * @param newCompilationDto data for creation
+     * @return Method returns the created compilation
+     */
     @PostMapping("/admin/compilations")
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto create(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         return compilationService.create(newCompilationDto);
     }
 
+    /**
+     * Method for deleting a compilation by id
+     * @param compId id of compilation to delete
+     */
     @DeleteMapping("/admin/compilations/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilationById(@PathVariable long compId) {
         compilationService.deleteCompilationById(compId);
     }
 
+    /**
+     * Method for updating a compilation
+     * @param compId id of compilation to update
+     * @param updateCompilationRequest data for updating
+     * @return Method returns the updated compilation
+     */
     @PatchMapping("/admin/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto update(@PathVariable long compId,

@@ -25,6 +25,11 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
 
+    /**
+     * Method for getting info about all compilations
+     * @param pinned pinned, unpinned of all(if null)
+     * @return Method returns info about compilations
+     */
     @Override
     public List<CompilationDto> get(Boolean pinned, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
@@ -38,6 +43,11 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toCompilationDto(foundCompilations);
     }
 
+    /**
+     * Method for getting info about a compilation
+     * @param id id of compilation to get info about
+     * @return Method return info about a compilation
+     */
     @Override
     public CompilationDto getCompilationById(long id) {
         Compilation compilation = compilationRepository.findById(id).orElseThrow(() -> new CompilationNotFoundException(id));
@@ -45,6 +55,11 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toCompilationDto(compilation);
     }
 
+    /**
+     * Method for creating a compilation
+     * @param newCompilationDto data for creation
+     * @return Method returns the created compilation
+     */
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
@@ -54,6 +69,10 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toCompilationDto(compilation);
     }
 
+    /**
+     * Method for deleting a compilation by id
+     * @param id id of compilation to delete
+     */
     @Override
     @Transactional
     public void deleteCompilationById(long id) {
@@ -62,6 +81,12 @@ public class CompilationServiceImpl implements CompilationService {
         log.info("Compilation with id={} was deleted", id);
     }
 
+    /**
+     * Method for updating a compilation
+     * @param id id of compilation to update
+     * @param updateCompilationRequest data for updating
+     * @return Method returns the updated compilation
+     */
     @Override
     @Transactional
     public CompilationDto update(long id, UpdateCompilationRequest updateCompilationRequest) {

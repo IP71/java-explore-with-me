@@ -20,6 +20,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+    /**
+     * Method for getting info about users
+     * @param ids ids of users to get info about
+     * @return Method returns info about users
+     */
     @Override
     public List<UserDto> get(List<Long> ids, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
@@ -33,6 +38,11 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(foundUsers);
     }
 
+    /**
+     * Method for creating a user
+     * @param newUserRequest data for creation
+     * @return Method returns the created user
+     */
     @Override
     @Transactional
     public UserDto create(NewUserRequest newUserRequest) {
@@ -41,6 +51,10 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(user);
     }
 
+    /**
+     * Method for deleting an user by id
+     * @param id id of user
+     */
     @Override
     @Transactional
     public void deleteUserById(long id) {

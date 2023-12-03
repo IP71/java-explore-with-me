@@ -30,8 +30,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e " +
             "WHERE ((lower(e.annotation) like lower(concat('%', ?1, '%'))) " +
-            "OR (lower(e.description) like lower(concat('%', ?1, '%')))) " +
-            "OR (?1 IS NULL) " +
+            "OR (lower(e.description) like lower(concat('%', ?1, '%'))) " +
+            "OR (?1 IS NULL)) " +
             "AND (e.category.id IN ?2 OR ?2 IS NULL) " +
             "AND (e.paid IS ?3 OR ?3 IS NULL) " +
             "AND (e.eventDate > ?4 OR ?4 IS NULL) " +
@@ -44,8 +44,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e " +
             "WHERE ((lower(e.annotation) like lower(concat('%', ?1, '%'))) " +
-            "OR (lower(e.description) like lower(concat('%', ?1, '%')))) " +
-            "OR (?1 IS NULL) " +
+            "OR (lower(e.description) like lower(concat('%', ?1, '%'))) " +
+            "OR (?1 IS NULL)) " +
             "AND (e.category.id IN ?2 OR ?2 IS NULL) " +
             "AND (e.paid IS ?3 OR ?3 IS NULL) " +
             "AND (e.eventDate > ?4 OR ?4 IS NULL) " +

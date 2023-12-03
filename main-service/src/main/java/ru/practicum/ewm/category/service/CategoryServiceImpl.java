@@ -24,6 +24,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
 
+    /**
+     * Method for creating a Category
+     * @param newCategoryDto Initial data for creation
+     * @return Method returns the created object
+     */
     @Override
     @Transactional
     public CategoryDto create(NewCategoryDto newCategoryDto) {
@@ -32,6 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryDto(category);
     }
 
+    /**
+     * Method for deleting a Category by id
+     * @param id id of Category to delete
+     */
     @Override
     @Transactional
     public void deleteCategoryById(long id) {
@@ -44,6 +53,12 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Category with id={} was deleted", id);
     }
 
+    /**
+     * Method for updating a Category
+     * @param id id of Category to update
+     * @param categoryDto data for updating
+     * @return Method returns the updated Category
+     */
     @Override
     @Transactional
     public CategoryDto update(long id, CategoryDto categoryDto) {
@@ -54,6 +69,10 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryDto(category);
     }
 
+    /**
+     * Method for getting info about all Categories
+     * @return Method returns info about all Categories
+     */
     @Override
     public List<CategoryDto> get(int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
@@ -62,6 +81,11 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryDto(foundCategories);
     }
 
+    /**
+     * Method for getting info about a Category by id
+     * @param id id of Category to get info about
+     * @return Method return info about a Category
+     */
     @Override
     public CategoryDto getCategoryById(long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
