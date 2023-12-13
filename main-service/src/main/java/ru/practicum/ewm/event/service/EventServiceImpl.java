@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.exception.CategoryNotFoundException;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
-//import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.exception.*;
 import ru.practicum.ewm.event.model.*;
@@ -34,14 +33,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
-    private static final String APP = "ewm-main-service";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
-    //private final StatsClient statsClient;
 
     /**
      * Method for getting info about events added by current user
@@ -330,8 +327,6 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public List<EventShortDto> get(UserSearchParameters parameters, HttpServletRequest request) {
-        //statsClient.addEndpointHit(APP, request.getRequestURI(), request.getRemoteAddr(),
-                //LocalDateTime.now().format(FORMATTER));
         String text = parameters.getText();
         List<Long> categories = parameters.getCategories();
         Boolean paid = parameters.getPaid();
@@ -369,8 +364,6 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public EventFullDto getEventById(long id, HttpServletRequest request) {
-        //statsClient.addEndpointHit(APP, request.getRequestURI(), request.getRemoteAddr(),
-                //LocalDateTime.now().format(FORMATTER));
         Optional<Event> optionalEvent = eventRepository.findByIdAndState(id, Status.PUBLISHED);
         Event event = optionalEvent.orElseThrow(() -> new EventNotFoundException(id));
         log.info("Get event with id={} by user", id);

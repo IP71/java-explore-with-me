@@ -57,6 +57,7 @@ public class EventMapper {
     }
 
     public static EventFullDto toEventFullDto(Event event) {
+        String publishedOn = event.getPublishedOn() == null ? null : event.getPublishedOn().format(FORMATTER);
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
@@ -69,7 +70,7 @@ public class EventMapper {
                 .location(event.getLocation())
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(event.getPublishedOn().format(FORMATTER))
+                .publishedOn(publishedOn)
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())

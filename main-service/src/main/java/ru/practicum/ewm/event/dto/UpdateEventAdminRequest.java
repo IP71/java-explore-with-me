@@ -2,11 +2,13 @@ package ru.practicum.ewm.event.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewm.location.model.Location;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UpdateEventAdminRequest {
     @Length(min = 20, max = 2000)
     private String annotation;
