@@ -250,8 +250,8 @@ public class EventServiceImpl implements EventService {
         PageRequest pageRequest = PageRequest.of(parameters.getFrom() / parameters.getSize(), parameters.getSize());
         List<Event> foundEvents = eventRepository.findAllByAdmin(users, states, categories, rangeStart, rangeEnd, pageRequest);
         log.info("Get events by admin: found {} events by users={}, states={}, categories={}, rangeStart={}, " +
-                        "rangeEnd={}, from={}, size={}", foundEvents.size(), users, states, categories, rangeStart, rangeEnd,
-                parameters.getFrom(), parameters.getSize());
+                        "rangeEnd={}, from={}, size={}", foundEvents.size(), users, states, categories, rangeStart,
+                rangeEnd, parameters.getFrom(), parameters.getSize());
         return EventMapper.toEventFullDto(foundEvents);
     }
 
