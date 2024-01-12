@@ -1,5 +1,6 @@
 package ru.practicum.ewm;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -38,11 +39,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({org.hibernate.exception.ConstraintViolationException.class, CategoryNotEmptyException.class,
-    BadEventDateException.class, UserIsNotInitiatorException.class, TryToChangePublishedEventException.class,
-    InvalidParticipantLimitException.class, ParticipantLimitIsFullException.class, StatusNotPendingException.class,
-    StatusNotConfirmedOrRejectedException.class, EventInWrongStateException.class, TooLateToPublishException.class,
-    RequestIsAlreadyExistsException.class, UserIsInitiatorException.class, EventIsNotPublishedException.class,
-    UserIsNotRequesterException.class})
+            UserIsNotInitiatorException.class, TryToChangePublishedEventException.class,
+            InvalidParticipantLimitException.class, ParticipantLimitIsFullException.class,
+            StatusNotPendingException.class, StatusNotConfirmedOrRejectedException.class,
+            EventInWrongStateException.class, TooLateToPublishException.class, RequestIsAlreadyExistsException.class,
+            UserIsInitiatorException.class, EventIsNotPublishedException.class, UserIsNotRequesterException.class,
+            DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictException(Throwable e) {
         List<String> errors = new ArrayList<>();

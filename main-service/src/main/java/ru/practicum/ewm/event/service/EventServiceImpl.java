@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.exception.CategoryNotFoundException;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.exception.*;
 import ru.practicum.ewm.event.model.*;
@@ -39,6 +40,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
+    private final StatsClient client;
 
     /**
      * Method for getting info about events added by current user
@@ -104,7 +106,6 @@ public class EventServiceImpl implements EventService {
         if (event.getState().equals(Status.PUBLISHED)) {
             throw new TryToChangePublishedEventException();
         }
-        checkEventDate(LocalDateTime.parse(request.getEventDate(), FORMATTER));
         if (request.getAnnotation() != null) {
             event.setAnnotation(request.getAnnotation());
         }
@@ -116,6 +117,7 @@ public class EventServiceImpl implements EventService {
             event.setDescription(request.getDescription());
         }
         if (request.getEventDate() != null) {
+            checkEventDate(LocalDateTime.parse(request.getEventDate(), FORMATTER));
             event.setEventDate(LocalDateTime.parse(request.getEventDate(), FORMATTER));
         }
         if (request.getLocation() != null) {
@@ -237,7 +239,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> getEventsByAdmin(AdminSearchParameters parameters) {
         List<Long> users = parameters.getUsers();
-        List<String> states = parameters.getStates();
+        List<Status> states = parameters.getStates();
         List<Long> categories = parameters.getCategories();
         LocalDateTime rangeStart = null;
         LocalDateTime rangeEnd = null;
@@ -265,12 +267,12 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto updateEventByAdmin(long eventId, UpdateEventAdminRequest request) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        if (StateAction.valueOf(request.getStateAction()).equals(StateAction.PUBLISH_EVENT) &&
-                !event.getState().equals(Status.PENDING)) {
+        if (request.getStateAction() != null && StateAction.valueOf(request.getStateAction())
+                .equals(StateAction.PUBLISH_EVENT) && !event.getState().equals(Status.PENDING)) {
             throw new EventInWrongStateException(request.getStateAction(), event.getState().toString());
         }
-        if (StateAction.valueOf(request.getStateAction()).equals(StateAction.REJECT_EVENT) &&
-                event.getState().equals(Status.PUBLISHED)) {
+        if (request.getStateAction() != null && StateAction.valueOf(request.getStateAction())
+                .equals(StateAction.REJECT_EVENT) && event.getState().equals(Status.PUBLISHED)) {
             throw new EventInWrongStateException(request.getStateAction(), event.getState().toString());
         }
         if (request.getAnnotation() != null) {
@@ -284,6 +286,9 @@ public class EventServiceImpl implements EventService {
             event.setDescription(request.getDescription());
         }
         if (request.getEventDate() != null) {
+            if (LocalDateTime.parse(request.getEventDate(), FORMATTER).isBefore(LocalDateTime.now())) {
+                throw new BadNewDateException(request.getEventDate());
+            }
             event.setEventDate(LocalDateTime.parse(request.getEventDate(), FORMATTER));
         }
         if (request.getLocation() != null) {
@@ -330,15 +335,19 @@ public class EventServiceImpl implements EventService {
         String text = parameters.getText();
         List<Long> categories = parameters.getCategories();
         Boolean paid = parameters.getPaid();
-        LocalDateTime rangeStart;
+        LocalDateTime rangeStart = null;
         LocalDateTime rangeEnd = null;
         if (parameters.getRangeStart() != null) {
             rangeStart = LocalDateTime.parse(parameters.getRangeStart(), FORMATTER);
-        } else {
-            rangeStart = LocalDateTime.now();
         }
         if (parameters.getRangeEnd() != null) {
             rangeEnd = LocalDateTime.parse(parameters.getRangeEnd(), FORMATTER);
+        }
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new BadDatesException(parameters.getRangeStart(), parameters.getRangeEnd());
+        }
+        if (rangeStart == null && rangeEnd == null) {
+            rangeStart = LocalDateTime.now();
         }
         Boolean onlyAvailable = parameters.getOnlyAvailable();
         String sort = parameters.getSort();
@@ -354,6 +363,7 @@ public class EventServiceImpl implements EventService {
         log.info("Get events by user: found {} events by text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, " +
                         "onlyAvailable={}, sort={}, from={}, size={}", foundEvents.size(), text, categories, paid,
                 rangeStart, rangeEnd, onlyAvailable, sort, parameters.getFrom(), parameters.getSize());
+        client.addEndpointHit("ewm", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(FORMATTER));
         return EventMapper.toEventShortDto(foundEvents);
     }
 
@@ -366,9 +376,12 @@ public class EventServiceImpl implements EventService {
     public EventFullDto getEventById(long id, HttpServletRequest request) {
         Optional<Event> optionalEvent = eventRepository.findByIdAndState(id, Status.PUBLISHED);
         Event event = optionalEvent.orElseThrow(() -> new EventNotFoundException(id));
+        if (client.checkIfIpIsUnique(request.getRequestURI(), request.getRemoteAddr())) {
+            event.setViews(event.getViews() + 1L);
+            eventRepository.save(event);
+        }
         log.info("Get event with id={} by user", id);
-        event.setViews(event.getViews() + 1L);
-        eventRepository.save(event);
+        client.addEndpointHit("ewm", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(FORMATTER));
         return EventMapper.toEventFullDto(event);
     }
 

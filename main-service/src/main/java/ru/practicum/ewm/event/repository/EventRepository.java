@@ -25,7 +25,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (e.eventDate > ?4 OR CAST (?4 AS timestamp) IS NULL) " +
             "AND (e.eventDate < ?5 OR CAST (?5 AS timestamp) IS NULL) " +
             "ORDER BY e.eventDate ASC")
-    List<Event> findAllByAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart,
+    List<Event> findAllByAdmin(List<Long> users, List<Status> states, List<Long> categories, LocalDateTime rangeStart,
                                LocalDateTime rangeEnd, Pageable pageable);
 
     @Query("SELECT e FROM Event e " +

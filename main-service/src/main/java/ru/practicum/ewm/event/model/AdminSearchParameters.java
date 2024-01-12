@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminSearchParameters {
     private List<Long> users;
-    private List<String> states;
+    private List<Status> states;
     private List<Long> categories;
     private String rangeStart;
     private String rangeEnd;

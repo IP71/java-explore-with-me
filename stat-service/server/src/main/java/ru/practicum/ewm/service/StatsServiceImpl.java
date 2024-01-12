@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -74,5 +75,11 @@ public class StatsServiceImpl implements StatsService {
         stats.sort((a, b) -> b.getHits().compareTo(a.getHits()));
         log.info("Найдено {} объектов по запросу start={}, end={}, uris={}, unique={}", stats.size(), start, end, uris, unique);
         return stats;
+    }
+
+    @Override
+    public Boolean checkIfIpIsUnique(String uri, String ip) {
+        Optional<EndpointHit> foundHit = statsRepository.findFirst1ByUriAndIp(uri, ip);
+        return foundHit.isEmpty();
     }
 }

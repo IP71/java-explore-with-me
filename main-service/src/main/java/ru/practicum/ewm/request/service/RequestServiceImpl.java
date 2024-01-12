@@ -66,10 +66,12 @@ public class RequestServiceImpl implements RequestService {
             throw new ParticipantLimitIsFullException();
         }
         Status status;
-        if (event.getRequestModeration()) {
-            status = Status.PENDING;
-        } else {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0L) {
             status = Status.CONFIRMED;
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1L);
+            event = eventRepository.save(event);
+        } else {
+            status = Status.PENDING;
         }
         ParticipationRequest request = requestRepository.save(ParticipationRequest.builder()
                 .event(event)

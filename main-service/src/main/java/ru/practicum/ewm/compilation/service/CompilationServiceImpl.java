@@ -15,6 +15,7 @@ import ru.practicum.ewm.compilation.repository.CompilationRepository;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +64,12 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        Set<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
+        Set<Event> events;
+        if (newCompilationDto.getEvents() == null) {
+            events = Collections.emptySet();
+        } else {
+            events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
+        }
         Compilation compilation = compilationRepository.save(CompilationMapper.newCompilationDtoToCompilation(newCompilationDto, events));
         log.info("Created compilation with id={}, title={}", compilation.getId(), compilation.getTitle());
         return CompilationMapper.toCompilationDto(compilation);

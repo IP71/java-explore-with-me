@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.model.AdminSearchParameters;
+import ru.practicum.ewm.event.model.Status;
 import ru.practicum.ewm.event.model.UserSearchParameters;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
@@ -111,7 +112,7 @@ public class EventController {
     @GetMapping("/admin/events")
     @ResponseStatus(HttpStatus.OK)
     public List<EventFullDto> getEventsByAdmin(@RequestParam(name = "users", required = false) List<Long> users,
-                                               @RequestParam(name = "states", required = false) List<String> states,
+                                               @RequestParam(name = "states", required = false) List<Status> states,
                                                @RequestParam(name = "categories", required = false) List<Long> categories,
                                                @RequestParam(name = "rangeStart", required = false) String rangeStart,
                                                @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
@@ -141,10 +142,10 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> get(@RequestParam(name = "text", required = false) String text,
                                    @RequestParam(name = "categories", required = false) List<Long> categories,
-                                   @RequestParam(name = "paid", required = false) boolean paid,
+                                   @RequestParam(name = "paid", required = false) Boolean paid,
                                    @RequestParam(name = "rangeStart", required = false) String rangeStart,
                                    @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                   @RequestParam(name = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,
+                                   @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                    @RequestParam(name = "sort", defaultValue = "VIEWS") String sort,
                                    @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") int from,
                                    @Positive @RequestParam(name = "size", defaultValue = "10") int size,
