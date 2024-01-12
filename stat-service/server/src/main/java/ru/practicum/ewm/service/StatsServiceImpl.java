@@ -77,6 +77,13 @@ public class StatsServiceImpl implements StatsService {
         return stats;
     }
 
+    /**
+     * Метод проверяет уникальность EndpointHit
+     *
+     * @param uri - uri
+     * @param ip - ip
+     * @return Метод возвращает true, если запрос уникальный
+     */
     @Override
     public Boolean checkIfIpIsUnique(String uri, String ip) {
         Optional<EndpointHit> foundHit = statsRepository.findFirst1ByUriAndIp(uri, ip);

@@ -46,4 +46,12 @@ public class StatsClient extends BaseClient {
             return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
         }
     }
+
+    public Boolean checkIfIpIsUnique(String uri, String ip) {
+        Map<String, Object> parameters = Map.of(
+                "uri", uri,
+                "ip", ip);
+        Object unique = get("/unique", parameters).getBody();
+        return unique.toString().equals("true");
+    }
 }
