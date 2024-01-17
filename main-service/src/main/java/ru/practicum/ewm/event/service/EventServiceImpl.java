@@ -378,7 +378,7 @@ public class EventServiceImpl implements EventService {
         Event event = optionalEvent.orElseThrow(() -> new EventNotFoundException(id));
         if (client.checkIfIpIsUnique(request.getRequestURI(), request.getRemoteAddr())) {
             event.setViews(event.getViews() + 1L);
-            eventRepository.save(event);
+            event = eventRepository.save(event);
         }
         log.info("Get event with id={} by user", id);
         client.addEndpointHit("ewm", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(FORMATTER));
@@ -395,7 +395,7 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * Method checks if event category is exist
+     * Method checks if event category exists
      */
     private Category checkEventCategory(long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
