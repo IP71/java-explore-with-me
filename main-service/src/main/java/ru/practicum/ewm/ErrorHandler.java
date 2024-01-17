@@ -30,11 +30,11 @@ public class ErrorHandler {
             errors.add(stackTraceElement + "\n");
         }
         return ApiError.builder()
-                .errors(errors)
                 .message(e.getMessage())
                 .reason("The required object was not found")
                 .status(HttpStatus.NOT_FOUND.toString())
                 .timestamp(LocalDateTime.now().format(FORMATTER))
+                .errors(errors)
                 .build();
     }
 
