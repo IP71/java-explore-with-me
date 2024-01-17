@@ -46,8 +46,8 @@ public class StatsServiceImpl implements StatsService {
      */
     @Override
     public List<ViewStatsDto> getStats(String start, String end, String[] uris, boolean unique) {
-        if (LocalDateTime.parse(start).isAfter(LocalDateTime.parse(end))) {
-            throw new IllegalArgumentException();
+        if (LocalDateTime.parse(start, FORMATTER).isAfter(LocalDateTime.parse(end, FORMATTER))) {
+            throw new IllegalArgumentException("Дата начала не может быть позже даты конца");
         }
         List<ViewStatsDto> stats = new ArrayList<>();
         List<EndpointHit> foundHits;
