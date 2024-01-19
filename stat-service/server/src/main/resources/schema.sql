@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS stats (
     app VARCHAR(255) NOT NULL,
     uri VARCHAR(255) NOT NULL,
     ip VARCHAR(255) NOT NULL,
-    creation_date TIMESTAMP
+    creation_date TIMESTAMP NOT NULL
 );

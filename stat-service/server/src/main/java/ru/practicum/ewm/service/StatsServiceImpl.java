@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,6 +46,9 @@ public class StatsServiceImpl implements StatsService {
      */
     @Override
     public List<ViewStatsDto> getStats(String start, String end, String[] uris, boolean unique) {
+        if (LocalDateTime.parse(start, FORMATTER).isAfter(LocalDateTime.parse(end, FORMATTER))) {
+            throw new IllegalArgumentException("Дата начала не может быть позже даты конца");
+        }
         List<ViewStatsDto> stats = new ArrayList<>();
         List<EndpointHit> foundHits;
         if (uris == null) {
@@ -74,5 +78,18 @@ public class StatsServiceImpl implements StatsService {
         stats.sort((a, b) -> b.getHits().compareTo(a.getHits()));
         log.info("Найдено {} объектов по запросу start={}, end={}, uris={}, unique={}", stats.size(), start, end, uris, unique);
         return stats;
+    }
+
+    /**
+     * Метод проверяет уникальность EndpointHit
+     *
+     * @param uri - uri
+     * @param ip - ip
+     * @return Метод возвращает true, если запрос уникальный
+     */
+    @Override
+    public Boolean checkIfIpIsUnique(String uri, String ip) {
+        Optional<EndpointHit> foundHit = statsRepository.findFirst1ByUriAndIp(uri, ip);
+        return foundHit.isEmpty();
     }
 }

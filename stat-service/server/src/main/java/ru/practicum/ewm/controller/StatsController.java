@@ -49,4 +49,18 @@ public class StatsController {
                                        @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         return statsService.getStats(start, end, uris, unique);
     }
+
+    /**
+     * Метод проверяет уникальность EndpointHit
+     *
+     * @param uri - uri
+     * @param ip - ip
+     * @return Метод возвращает true, если запрос уникальный
+     */
+    @GetMapping("/unique")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean checkIfIpIsUnique(@RequestParam(name = "uri") String uri,
+                                     @RequestParam(name = "ip") String ip) {
+        return statsService.checkIfIpIsUnique(uri, ip);
+    }
 }

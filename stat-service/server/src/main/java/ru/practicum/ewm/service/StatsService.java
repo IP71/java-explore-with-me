@@ -10,4 +10,6 @@ public interface StatsService {
     EndpointHitResponse addEndpointHit(EndpointHitDto endpointHit);
 
     List<ViewStatsDto> getStats(String start, String end, String[] uris, boolean unique);
+
+    Boolean checkIfIpIsUnique(String uri, String ip);
 }
