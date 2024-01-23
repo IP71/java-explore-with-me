@@ -151,7 +151,7 @@ public class EventServiceImpl implements EventService {
         if (request.getTitle() != null) {
             event.setTitle(request.getTitle());
         }
-        eventRepository.save(event);
+        event = eventRepository.save(event);
         log.info("Event with id={}, title={} was updated", event.getId(), event.getTitle());
         return EventMapper.toEventFullDto(event);
     }
@@ -313,6 +313,7 @@ public class EventServiceImpl implements EventService {
                 if (LocalDateTime.now().plusHours(1).isAfter(event.getEventDate())) {
                     throw new TooLateToPublishException(event.getEventDate().format(FORMATTER));
                 }
+                event.setPublishedOn(LocalDateTime.now());
                 event.setState(Status.PUBLISHED);
             } else {
                 event.setState(Status.REJECTED);
@@ -321,7 +322,7 @@ public class EventServiceImpl implements EventService {
         if (request.getTitle() != null) {
             event.setTitle(request.getTitle());
         }
-        eventRepository.save(event);
+        event = eventRepository.save(event);
         log.info("Event with id={}, title={} was updated by admin", event.getId(), event.getTitle());
         return EventMapper.toEventFullDto(event);
     }

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.ewm.category.exception.CategoryNotEmptyException;
 import ru.practicum.ewm.category.exception.CategoryNotFoundException;
+import ru.practicum.ewm.comment.exception.CommentNotFoundException;
+import ru.practicum.ewm.comment.exception.UserIsNotAuthorException;
 import ru.practicum.ewm.compilation.exception.CompilationNotFoundException;
 import ru.practicum.ewm.event.exception.*;
 import ru.practicum.ewm.request.exception.*;
@@ -22,7 +24,8 @@ public class ErrorHandler {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @ExceptionHandler({CategoryNotFoundException.class, CompilationNotFoundException.class,
-            EventNotFoundException.class, RequestNotFoundException.class, UserNotFoundException.class})
+            EventNotFoundException.class, RequestNotFoundException.class, UserNotFoundException.class,
+            CommentNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleResourceNotFoundException(Throwable e) {
         List<String> errors = new ArrayList<>();
@@ -44,7 +47,7 @@ public class ErrorHandler {
             StatusNotPendingException.class, StatusNotConfirmedOrRejectedException.class,
             EventInWrongStateException.class, TooLateToPublishException.class, RequestIsAlreadyExistsException.class,
             UserIsInitiatorException.class, EventIsNotPublishedException.class, UserIsNotRequesterException.class,
-            DataIntegrityViolationException.class})
+            DataIntegrityViolationException.class, UserIsNotAuthorException.class, EventIsNotPublishedException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictException(Throwable e) {
         List<String> errors = new ArrayList<>();
